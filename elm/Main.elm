@@ -1,10 +1,9 @@
-module Main (..) where
+module Naive (..) where
 
 import Effects
 import Task
 import Html exposing (div, span, table, tbody, tr, td, text)
 import Html.Attributes exposing (class)
---import Html.Lazy exposing (lazy)
 import StartApp
 
 
@@ -79,7 +78,7 @@ viewDatabase database =
             [ text (toString database.lastSample.nbQueries) ]
         ]
      ]
-      ++ (List.map ({-lazy-} viewTopFiveQueries) database.lastSample.topFiveQueries)
+      ++ (List.map viewTopFiveQueries database.lastSample.topFiveQueries)
     )
 
 
@@ -91,7 +90,7 @@ view address model =
         [ class "table table-striped latest-data" ]
         [ tbody
             []
-            (List.map ({-lazy-} viewDatabase) model)
+            (List.map viewDatabase model)
         ]
     ]
 
