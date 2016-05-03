@@ -11726,11 +11726,11 @@ Elm.StartApp.make = function (_elm) {
                                  ,Config: Config
                                  ,App: App};
 };
-Elm.Main = Elm.Main || {};
-Elm.Main.make = function (_elm) {
+Elm.Naive = Elm.Naive || {};
+Elm.Naive.make = function (_elm) {
    "use strict";
-   _elm.Main = _elm.Main || {};
-   if (_elm.Main.values) return _elm.Main.values;
+   _elm.Naive = _elm.Naive || {};
+   if (_elm.Naive.values) return _elm.Naive.values;
    var _U = Elm.Native.Utils.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Debug = Elm.Debug.make(_elm),
@@ -11745,7 +11745,7 @@ Elm.Main.make = function (_elm) {
    $Task = Elm.Task.make(_elm);
    var _op = {};
    var dispatchGenerateData = Elm.Native.Port.make(_elm).inboundSignal("dispatchGenerateData",
-   "Main.Model",
+   "Naive.Model",
    function (v) {
       return typeof v === "object" && v instanceof Array ? Elm.Native.List.make(_elm).fromArray(v.map(function (v) {
          return typeof v === "object" && "dbname" in v && "lastSample" in v ? {_: {}
@@ -11840,17 +11840,17 @@ Elm.Main.make = function (_elm) {
    var Query = F3(function (a,b,c) {
       return {elapsedClassName: a,formatElapsed: b,query: c};
    });
-   return _elm.Main.values = {_op: _op
-                             ,Query: Query
-                             ,LastSample: LastSample
-                             ,Database: Database
-                             ,initialModel: initialModel
-                             ,LoadData: LoadData
-                             ,update: update
-                             ,viewTopFiveQueries: viewTopFiveQueries
-                             ,viewDatabase: viewDatabase
-                             ,view: view
-                             ,actions: actions
-                             ,app: app
-                             ,main: main};
+   return _elm.Naive.values = {_op: _op
+                              ,Query: Query
+                              ,LastSample: LastSample
+                              ,Database: Database
+                              ,initialModel: initialModel
+                              ,LoadData: LoadData
+                              ,update: update
+                              ,viewTopFiveQueries: viewTopFiveQueries
+                              ,viewDatabase: viewDatabase
+                              ,view: view
+                              ,actions: actions
+                              ,app: app
+                              ,main: main};
 };
