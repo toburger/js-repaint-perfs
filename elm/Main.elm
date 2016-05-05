@@ -1,10 +1,8 @@
-module Naive (..) where
+port module Naive exposing (..)
 
-import Effects
-import Task
-import Html exposing (div, span, table, tbody, tr, td, text)
+import Html exposing (Html, div, span, table, tbody, tr, td, text)
 import Html.Attributes exposing (class)
-import StartApp
+import Html.App as Html
 
 
 type alias Query =
@@ -36,18 +34,18 @@ initialModel =
   []
 
 
-type Action
+type Msg
   = LoadData Model
 
 
-update : Action -> Model -> ( Model, Effects.Effects Action )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
   case action of
     LoadData model ->
-      ( model, Effects.none )
+      ( model, Cmd.none )
 
 
-viewTopFiveQueries : Query -> Html.Html
+viewTopFiveQueries : Query -> Html Msg
 viewTopFiveQueries query =
   td
     [ class ("Query " ++ query.elapsedClassName) ]
@@ -64,7 +62,7 @@ viewTopFiveQueries query =
     ]
 
 
-viewDatabase : Database -> Html.Html
+viewDatabase : Database -> Html Msg
 viewDatabase database =
   tr
     []
@@ -82,11 +80,12 @@ viewDatabase database =
     )
 
 
-view : Signal.Address Action -> Model -> Html.Html
-view address model =
+view : Model -> Html Msg
+view model =
   div
     []
-    [ table
+    [ text "OK"
+    , table
         [ class "table table-striped latest-data" ]
         [ tbody
             []
@@ -95,29 +94,18 @@ view address model =
     ]
 
 
-actions : List (Signal Action)
-actions =
-  [ Signal.map LoadData dispatchGenerateData ]
+port dispatchGenerateData : (Model -> msg) -> Sub msg
 
 
-app : StartApp.App Model
-app =
-  StartApp.start
-    { init = ( initialModel, Effects.none )
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  dispatchGenerateData LoadData
+
+
+main =
+  Html.program
+    { init = ( initialModel, Cmd.none )
     , update = update
     , view = view
-    , inputs = actions
+    , subscriptions = subscriptions
     }
-
-
-main : Signal Html.Html
-main =
-  app.html
-
-
-port tasks : Signal (Task.Task Effects.Never ())
-port tasks =
-  app.tasks
-
-
-port dispatchGenerateData : Signal Model

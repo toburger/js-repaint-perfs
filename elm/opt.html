@@ -16,10 +16,7 @@
 	<script src="../lib/monitor.js"></script>
 	<script src="opt.js"></script>
 	<script type="text/javascript">
-		var app = Elm.embed(
-			Elm.Opt, document.getElementById('app'), {
-				dispatchGenerateData: []
-			});
+		var app = Elm.Opt.embed(document.getElementById('app'));
 
 		function loadSamples() {
 			app.ports.dispatchGenerateData.send(
