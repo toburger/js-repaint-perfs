@@ -84,8 +84,7 @@ view : Model -> Html Msg
 view model =
   div
     []
-    [ text "OK"
-    , table
+    [ table
         [ class "table table-striped latest-data" ]
         [ tbody
             []
