@@ -7152,7 +7152,6 @@ var _user$project$Naive$view = function (model) {
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html$text('OK'),
 				A2(
 				_elm_lang$html$Html$table,
 				_elm_lang$core$Native_List.fromArray(
