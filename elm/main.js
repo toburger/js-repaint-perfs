@@ -2828,13 +2828,21 @@ var _elm_lang$core$Native_Platform = function() {
 
 function addPublicModule(object, name, main)
 {
-	var embed = main ? makeEmbed(name, main) : mainIsUndefined(name);
+	var init = main ? makeEmbed(name, main) : mainIsUndefined(name);
 
-	object['embed'] = embed;
+	object['worker'] = function worker(flags)
+	{
+		return init(undefined, flags, false);
+	}
+
+	object['embed'] = function embed(domNode, flags)
+	{
+		return init(domNode, flags, true);
+	}
 
 	object['fullscreen'] = function fullscreen(flags)
 	{
-		return embed(document.body, flags);
+		return init(document.body, flags, true);
 	};
 }
 
@@ -2865,11 +2873,15 @@ function errorHtml(message)
 
 function makeEmbed(moduleName, main)
 {
-	return function embed(rootDomNode, flags)
+	return function embed(rootDomNode, flags, withRenderer)
 	{
 		try
 		{
 			var program = mainToProgram(moduleName, main);
+			if (!withRenderer)
+			{
+				program.renderer = dummyRenderer;
+			}
 			return makeEmbedHelp(moduleName, program, rootDomNode, flags);
 		}
 		catch (e)
@@ -2878,6 +2890,11 @@ function makeEmbed(moduleName, main)
 			throw e;
 		}
 	};
+}
+
+function dummyRenderer()
+{
+	return { update: function() {} };
 }
 
 
@@ -2940,7 +2957,7 @@ function initWithFlags(moduleName, realInit, flagDecoder)
 		if (result.ctor === 'Err')
 		{
 			throw new Error(
-				'You trying to initialize module `' + moduleName + '` with an unexpected argument.\n'
+				'You are trying to initialize module `' + moduleName + '` with an unexpected argument.\n'
 				+ 'When trying to convert it to a usable Elm value, I run into this problem:\n\n'
 				+ result._0
 			);
@@ -5295,7 +5312,7 @@ function runHelp(decoder, value)
 			var realResult = decoder.callback(result.value);
 			if (realResult.ctor === 'Err')
 			{
-				throw new Error('TODO');
+				return badPrimitive('something custom', value);
 			}
 			return ok(realResult._0);
 
@@ -5925,6 +5942,13 @@ function applyFacts(domNode, eventNode, facts)
 				applyAttrsNS(domNode, value);
 				break;
 
+			case 'value':
+				if (domNode[key] !== value)
+				{
+					domNode[key] = value;
+				}
+				break;
+
 			default:
 				domNode[key] = value;
 				break;
@@ -6244,16 +6268,6 @@ function diffFacts(a, b, category)
 {
 	var diff;
 
-	// add new stuff
-	for (var bKey in b)
-	{
-		if (!(bKey in a))
-		{
-			diff = diff || {};
-			diff[bKey] = b[bKey];
-		}
-	}
-
 	// look for changes and removals
 	for (var aKey in a)
 	{
@@ -6301,6 +6315,16 @@ function diffFacts(a, b, category)
 
 		diff = diff || {};
 		diff[aKey] = bValue;
+	}
+
+	// add new stuff
+	for (var bKey in b)
+	{
+		if (!(bKey in a))
+		{
+			diff = diff || {};
+			diff[bKey] = b[bKey];
+		}
 	}
 
 	return diff;
@@ -6815,6 +6839,9 @@ var _elm_lang$html$Html_Attributes$type$ = function (value) {
 };
 var _elm_lang$html$Html_Attributes$value = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'value', value);
+};
+var _elm_lang$html$Html_Attributes$defaultValue = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'defaultValue', value);
 };
 var _elm_lang$html$Html_Attributes$placeholder = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'placeholder', value);
